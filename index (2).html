@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rumble Party</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/NwDKEMF_d.png?maxwidth=520&shape=thumb&fidelity=high">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat (Regular 400 and Black 900) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&display=swap" rel="stylesheet">
+
+    <style>
+        .font-montserrat-black {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+        }
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+        }
+
+        .fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .fade-in {
+            opacity: 1 !important;
+        }
+
+        body.loading {
+            overflow: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="loading bg-black text-white font-montserrat">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-[100] bg-[#181818] flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out">
+        <!-- Logo as a Loading Bar -->
+        <div class="relative w-48 md:w-64 mb-6">
+            <!-- Background (darkened/empty) logo -->
+            <img src="https://i.imgur.com/PZ5itSb.png" alt="Rumble Party Logo" class="w-full opacity-20 drop-shadow-lg">
+            <!-- Foreground (filled) logo that reveals from left to right -->
+            <img id="logo-fill" src="https://i.imgur.com/PZ5itSb.png" alt="" class="w-full absolute top-0 left-0 drop-shadow-lg" style="clip-path: inset(0 100% 0 0);">
+        </div>
+        <!-- Loading Percentage -->
+        <div id="loading-text" class="text-white text-5xl md:text-6xl font-montserrat-black tracking-wider">0%</div>
+    </div>
+
+    <!-- Main Content (Hidden initially by opacity) -->
+    <div id="main-content" class="opacity-0 transition-opacity duration-1000 ease-in-out relative w-full">
+        
+        <!-- Background Image (Fixed behind everything) -->
+        <div class="fixed inset-0 z-[-1] bg-cover bg-center bg-no-repeat" style="background-image: url('https://i.imgur.com/j961wit.png');"></div>
+
+        <!-- Fixed Shared Header -->
+        <header class="fixed top-0 w-full z-[150] bg-black/40 backdrop-blur-md border-b border-white/10 flex items-center px-6 py-4 md:px-12">
+            <!-- Colored Logo -->
+            <img src="https://i.imgur.com/NwDKEMF_d.png?maxwidth=520&shape=thumb&fidelity=high" alt="Rumble Party Logo" class="h-8 md:h-10 mr-12 cursor-pointer" onclick="switchView('home')">
+            
+            <!-- Navigation Buttons -->
+            <nav class="hidden md:flex gap-8 text-sm uppercase font-bold tracking-wide mt-1">
+                <a href="#" onclick="switchView('home'); return false;" id="nav-home" class="nav-link text-white border-b-2 border-white pb-1">Home</a>
+                <a href="#" onclick="switchView('characters'); return false;" id="nav-characters" class="nav-link text-gray-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-gray-300">Characters</a>
+                <a href="#" onclick="switchView('get-involved'); return false;" id="nav-get-involved" class="nav-link text-gray-300 hover:text-white transition-colors pb-1 border-b-2 border-transparent hover:border-gray-300">Get Involved</a>
+            </nav>
+
+            <div class="md:hidden ml-auto">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </div>
+        </header>
+
+        <!-- PAGE VIEW: HOME -->
+        <div id="view-home" class="page-view block w-full">
+            <!-- Hero Section (Takes up full screen height) -->
+            <div class="h-screen flex flex-col w-full relative pt-20">
+
+                <!-- Hero Content Area -->
+                <main class="flex-grow flex flex-col items-center justify-end pb-24 px-4 text-center">
+                <a href="https://discord.gg/F7tv9nG6Ux" target="_blank" class="inline-block bg-[#d32f2f] hover:bg-[#b71c1c] text-white font-bold py-4 px-12 rounded-sm shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-lg md:text-xl tracking-wider uppercase transition transform hover:scale-105 mb-8">
+                    Pre-Register
+                </a>
+                
+                <a href="#about" class="animate-bounce text-white/70 cursor-pointer hover:text-white transition inline-block">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                </a>
+            </main>
+        </div>
+
+        <!-- About Section -->
+        <section id="about" class="w-full bg-[#181818] text-white py-24 px-6 md:px-12 relative z-10 border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+                <!-- Text Content -->
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h2 class="text-4xl md:text-6xl font-montserrat-black tracking-wide uppercase mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">The Ultimate Showdown</h2>
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed mb-6 font-montserrat">
+                        Rumble Party is an electrifying <span class="text-white font-bold">15-player party and minigame collection</span> where you and your crew battle it out for the grand prize! 
+                    </p>
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-montserrat">
+                        Dive into a massive collection of chaotic challenges. Whether you crave the adrenaline of high-speed races or prefer outsmarting opponents in interactive puzzle games, there's a game mode for everyone. Grab your friends, step into the arena, and let the rumble begin!
+                    </p>
+                </div>
+                
+                <!-- Visual decorative element -->
+                <div class="md:w-1/2 flex justify-center w-full mt-8 md:mt-0">
+                    <div class="w-full aspect-video md:aspect-square max-w-md bg-gradient-to-br from-white/10 to-transparent rounded-xl border border-white/10 shadow-2xl flex items-center justify-center p-8 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[#d32f2f] opacity-20 blur-[100px] rounded-full"></div>
+                        <img src="https://i.imgur.com/PZ5itSb.png" alt="Rumble Party Logo" class="relative z-10 opacity-70 drop-shadow-2xl transform md:-rotate-6 md:scale-110 w-3/4">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="w-full bg-[#111] py-12 px-6 border-t border-white/10 relative z-10">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex flex-col md:flex-row items-center gap-4">
+                    <img src="https://i.imgur.com/NwDKEMF_d.png?maxwidth=520&shape=thumb&fidelity=high" alt="Rumble Party" class="h-6 opacity-50 grayscale">
+                    <span class="text-gray-500 text-sm font-montserrat">© 2026 Toromo Games. All rights reserved.</span>
+                </div>
+                
+                <div class="flex gap-6">
+                    <!-- Discord -->
+                    <a href="https://discord.gg/F7tv9nG6Ux" target="_blank" class="text-gray-400 hover:text-[#5865F2] transition-colors" title="Join our Discord">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+                    </a>
+                    <!-- Twitter / X -->
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors" title="Follow us on X">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="#" class="text-gray-400 hover:text-[#FF0000] transition-colors" title="Subscribe on YouTube">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+        </div> <!-- End of View: Home -->
+
+        <!-- PAGE VIEW: GET INVOLVED -->
+        <div id="view-get-involved" class="page-view hidden w-full min-h-screen bg-[#111111] text-white pt-32 pb-24 px-6 md:px-12 relative z-10">
+            <div class="max-w-5xl mx-auto flex flex-col items-center">
+                
+                <!-- Section Header / Banner -->
+                <div class="w-full relative mb-16 group">
+                    <img src="https://i.imgur.com/sOnxYiW.png" alt="Toromo Games Banner" class="w-full h-48 md:h-72 object-cover rounded-t-2xl md:rounded-2xl shadow-2xl border border-white/10 opacity-90 group-hover:opacity-100 transition duration-500">
+                    
+                    <!-- Overlapping Square Logo -->
+                    <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
+                        <img src="https://i.imgur.com/uVoCYN2.png" alt="Toromo Games Logo" class="w-24 h-24 md:w-32 md:h-32 object-contain bg-[#181818] rounded-xl border-4 border-[#111111] shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+                    </div>
+                </div>
+
+                <!-- Text Content -->
+                <div class="text-center max-w-3xl mt-8 px-4">
+                    <h2 class="text-3xl md:text-5xl font-montserrat-black tracking-wide uppercase mb-8 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Join The Crew</h2>
+                    
+                    <p class="text-lg md:text-xl text-gray-300 leading-relaxed font-montserrat italic mb-12">
+                        "Here at TOROMO games, we are always euphuistic about raising the bar for players AND developers. Most would say, it is a pleasure to work with us, but here, we think it's a pleasure to work with new, and skilled people, every day."
+                    </p>
+                    
+                    <!-- Job Status Badge -->
+                    <div class="inline-block bg-white/5 border border-white/10 rounded-full px-6 py-3 transition hover:bg-white/10">
+                        <p class="text-gray-400 text-sm md:text-base font-semibold tracking-wide">
+                            No positions available, check back later!  ^_^
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PAGE VIEW: CHARACTERS -->
+        <div id="view-characters" class="page-view hidden w-full">
+            <!-- Short Banner -->
+            <div class="h-[40vh] min-h-[300px] flex flex-col w-full relative pt-20">
+                <main class="flex-grow flex flex-col items-center justify-center px-4 text-center">
+                    <h2 class="text-5xl md:text-7xl font-montserrat-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-2xl mb-4">Characters</h2>
+                    
+                    <!-- Bounce arrow indicating scroll -->
+                    <a href="#roster-list" class="animate-bounce text-white/70 cursor-pointer hover:text-white transition mt-8 inline-block">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </a>
+                </main>
+            </div>
+
+            <!-- Roster List Section -->
+            <section id="roster-list" class="w-full bg-[#181818] text-white py-24 px-6 md:px-12 relative z-10 border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+                <div class="max-w-4xl mx-auto flex flex-col gap-6">
+                    
+                    <!-- Character 1: Speedster (Red) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH1" alt="Character 1" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 01</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-red-500 uppercase tracking-widest">Speedster</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 2: Intellect (Blue) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH2" alt="Character 2" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 02</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-blue-500 uppercase tracking-widest">Intellect</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 3: Rocker (Orange) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH3" alt="Character 3" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 03</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-orange-500 uppercase tracking-widest">Rocker</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 4: Vanity (Pink) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH4" alt="Character 4" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 04</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-pink-500 uppercase tracking-widest">Vanity</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 5: Speedster (Red) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH5" alt="Character 5" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 05</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-red-500 uppercase tracking-widest">Speedster</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 6: Intellect (Blue) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH6" alt="Character 6" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 06</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-blue-500 uppercase tracking-widest">Intellect</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 7: Rocker (Orange) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH7" alt="Character 7" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 07</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-orange-500 uppercase tracking-widest">Rocker</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 8: Vanity (Pink) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH8" alt="Character 8" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 08</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-pink-500 uppercase tracking-widest">Vanity</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 9: Speedster (Red) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH9" alt="Character 9" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 09</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-red-500 uppercase tracking-widest">Speedster</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Character 10: Intellect (Blue) -->
+                    <div onclick="switchView('character-template')" class="group w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 hover:border-white/30 rounded-xl p-4 md:p-6 flex items-center gap-4 md:gap-6 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="https://placehold.co/150x150/222/FFF?text=CH10" alt="Character 10" class="w-16 h-16 md:w-32 md:h-32 object-cover rounded-lg border-2 border-white/10 relative z-10 shadow-lg flex-shrink-0">
+                        <div class="relative z-10 flex-grow">
+                            <h3 class="text-xl md:text-4xl font-montserrat-black uppercase tracking-wide">Fighter 10</h3>
+                            <p class="font-montserrat text-sm md:text-lg mt-1 font-bold text-blue-500 uppercase tracking-widest">Intellect</p>
+                        </div>
+                        <div class="text-white/30 group-hover:text-white/80 transition-colors relative z-10">
+                            <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- PAGE VIEW: CHARACTER TEMPLATE SUBPAGE -->
+        <div id="view-character-template" class="page-view hidden w-full min-h-screen bg-[#111111] text-white pt-32 pb-24 px-6 md:px-12 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                
+                <!-- Back Button -->
+                <button onclick="switchView('characters')" class="group flex items-center gap-2 text-gray-400 hover:text-white font-bold uppercase tracking-wider text-sm mb-12 transition-colors">
+                    <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    Back to Roster
+                </button>
+
+                <div class="flex flex-col md:flex-row gap-12 items-start">
+                    <!-- Character Display Image (Placeholder) -->
+                    <div class="w-full md:w-1/2 flex justify-center">
+                        <img src="https://placehold.co/400x600/181818/FFF?text=Character+Art" alt="Character Full Art" class="w-full max-w-sm rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 object-cover">
+                    </div>
+
+                    <!-- Character Details -->
+                    <div class="w-full md:w-1/2">
+                        <h2 class="text-5xl md:text-7xl font-montserrat-black uppercase tracking-wide mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">Character Name</h2>
+                        <h4 class="text-xl md:text-2xl text-[#d32f2f] font-bold tracking-widest uppercase mb-8">Class / Role</h4>
+
+                        <p class="text-gray-300 text-lg leading-relaxed font-montserrat mb-8">
+                            Character biography, lore, and motivations. 
+                        </p>
+
+                        <div class="bg-white/5 border border-white/10 rounded-xl p-6">
+                            <h5 class="font-montserrat-black uppercase tracking-widest text-sm text-gray-400 mb-4 border-b border-white/10 pb-2">Signature Moves</h5>
+                            <ul class="space-y-4">
+                                <li>
+                                    <span class="font-bold text-white block">Dash Attack</span>
+                                    <span class="text-sm text-gray-400">Quickly closes the gap between opponents, dealing knockback.</span>
+                                </li>
+                                <li>
+                                    <span class="font-bold text-white block">Ultimate Strike</span>
+                                    <span class="text-sm text-gray-400">A devastating area-of-effect attack that clears the board.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="BackgroundMusic.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="mute-btn" class="fixed bottom-4 right-4 z-[200] bg-black/60 backdrop-blur-md border border-white/20 p-2 rounded-full text-white hover:bg-white/20 transition-all duration-300 hover:scale-110 shadow-lg cursor-pointer">
+        <svg id="icon-unmuted" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5 10v4a2 2 0 002 2h2.586l3.707 3.707a1 1 0 001.707-.707V4.996a1 1 0 00-1.707-.707L9.586 8H7a2 2 0 00-2 2z"></path></svg>
+        <svg id="icon-muted" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>
+    </button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const loadingText = document.getElementById('loading-text');
+            const logoFill = document.getElementById('logo-fill');
+            const loadingScreen = document.getElementById('loading-screen');
+            const mainContent = document.getElementById('main-content');
+            const body = document.body;
+
+            const minTime = 2000;
+            const maxTime = 10000;
+            const loadTimeMs = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
+            
+            const updateInterval = 50; 
+            const totalSteps = loadTimeMs / updateInterval;
+            let currentStep = 0;
+
+            const interval = setInterval(() => {
+                currentStep++;
+                
+                const percentage = Math.min(Math.round((currentStep / totalSteps) * 100), 100);
+                loadingText.innerText = percentage + '%';
+                
+                logoFill.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
+
+                if (currentStep >= totalSteps) {
+                    clearInterval(interval);
+                    
+                    loadingScreen.classList.add('fade-out');
+                    
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        mainContent.classList.add('fade-in');
+                        body.classList.remove('loading');
+                    }, 700); 
+                }
+            }, updateInterval);
+        });
+
+        const bgMusic = document.getElementById('bg-music');
+        const muteBtn = document.getElementById('mute-btn');
+        const iconUnmuted = document.getElementById('icon-unmuted');
+        const iconMuted = document.getElementById('icon-muted');
+        
+        let musicStarted = false;
+        bgMusic.volume = 0.5;
+
+        document.body.addEventListener('click', () => {
+            if (!musicStarted) {
+                bgMusic.muted = false;
+                bgMusic.play().catch(err => console.warn("Audio playback prevented:", err));
+                musicStarted = true;
+                iconUnmuted.classList.remove('hidden');
+                iconMuted.classList.add('hidden');
+            }
+        }, { once: true });
+
+        muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            
+            if (!musicStarted) {
+                musicStarted = true;
+                bgMusic.muted = false;
+                bgMusic.play().catch(err => console.warn(err));
+                iconUnmuted.classList.remove('hidden');
+                iconMuted.classList.add('hidden');
+                return;
+            }
+
+            bgMusic.muted = !bgMusic.muted;
+            if (bgMusic.muted) {
+                iconUnmuted.classList.add('hidden');
+                iconMuted.classList.remove('hidden');
+            } else {
+                iconUnmuted.classList.remove('hidden');
+                iconMuted.classList.add('hidden');
+            }
+        });
+
+        window.switchView = function(viewId) {
+            document.querySelectorAll('.page-view').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+            
+            const targetView = document.getElementById('view-' + viewId);
+            if(targetView) {
+                targetView.classList.remove('hidden');
+                targetView.classList.add('block');
+            }
+            
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('text-white', 'border-white');
+                el.classList.add('text-gray-300', 'border-transparent');
+            });
+            
+            const activeLink = document.getElementById('nav-' + viewId);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-300', 'border-transparent');
+                activeLink.classList.add('text-white', 'border-white');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
+</body>
+</html>
