@@ -434,28 +434,43 @@
         let musicStarted = false;
         bgMusic.volume = 0.5;
 
-        document.body.addEventListener('click', () => {
-            if (!musicStarted) {
-                bgMusic.muted = false;
-                bgMusic.play().catch(err => console.warn("Audio playback prevented:", err));
-                musicStarted = true;
-                iconUnmuted.classList.remove('hidden');
-                iconMuted.classList.add('hidden');
+        const tryPlayMusic = () => {
+            if (musicStarted) return;
+            
+            bgMusic.muted = false;
+            const playPromise = bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Success! The browser allowed the music to play.
+                    musicStarted = true;
+                    iconUnmuted.classList.remove('hidden');
+                    iconMuted.classList.add('hidden');
+                    
+                    // Clean up event listeners now that it's playing
+                    document.removeEventListener('click', tryPlayMusic);
+                    document.removeEventListener('keydown', tryPlayMusic);
+                }).catch(err => {
+                    // Browser still blocked it. It will try again on the next click.
+                    console.warn("Browser blocked audio. Waiting for next user click.");
+                });
             }
-        }, { once: true });
+        };
+
+        // Listen for ANY interaction (click or typing) until the music starts
+        document.addEventListener('click', tryPlayMusic);
+        document.addEventListener('keydown', tryPlayMusic);
 
         muteBtn.addEventListener('click', (e) => {
             e.stopPropagation(); 
             
+            // If music hasn't started at all yet, try to start it
             if (!musicStarted) {
-                musicStarted = true;
-                bgMusic.muted = false;
-                bgMusic.play().catch(err => console.warn(err));
-                iconUnmuted.classList.remove('hidden');
-                iconMuted.classList.add('hidden');
+                tryPlayMusic();
                 return;
             }
 
+            // Otherwise, just toggle the mute state
             bgMusic.muted = !bgMusic.muted;
             if (bgMusic.muted) {
                 iconUnmuted.classList.add('hidden');
