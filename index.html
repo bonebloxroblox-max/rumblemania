@@ -436,46 +436,57 @@
         const iconMuted = document.getElementById('icon-muted');
         
         bgMusic.volume = 0.5;
-        let hasInteracted = false; // Tracks if the user has clicked anything yet
+        let isPlaying = false;
 
-        function toggleAudio() {
-            if (!hasInteracted) {
-                // First time interacting - attempt to play the music
-                hasInteracted = true;
-                bgMusic.muted = false;
-                
-                bgMusic.play().then(() => {
-                    // Success! Update icons
-                    iconUnmuted.classList.remove('hidden');
-                    iconMuted.classList.add('hidden');
-                }).catch(err => {
-                    console.warn("Audio block:", err);
-                    hasInteracted = false; // Reset so they can try again
-                });
+        // Helper to swap icons based on state
+        function updateIcons() {
+            if (isPlaying) {
+                iconUnmuted.classList.remove('hidden');
+                iconMuted.classList.add('hidden');
             } else {
-                // Subsequent clicks on the mute button just toggle state
-                bgMusic.muted = !bgMusic.muted;
-                if (bgMusic.muted) {
-                    iconUnmuted.classList.add('hidden');
-                    iconMuted.classList.remove('hidden');
-                } else {
-                    iconUnmuted.classList.remove('hidden');
-                    iconMuted.classList.add('hidden');
-                }
+                iconUnmuted.classList.add('hidden');
+                iconMuted.classList.remove('hidden');
             }
         }
 
-        // Listen for the very first click anywhere on the document body
-        document.body.addEventListener('click', () => {
-            if (!hasInteracted) {
-                toggleAudio();
+        // Function to attempt playing audio
+        function startAudio() {
+            if (isPlaying) return; // If already playing, do nothing
+            
+            let playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isPlaying = true;
+                    bgMusic.muted = false;
+                    updateIcons();
+                }).catch(err => {
+                    console.log("Audio playback waiting for stronger user interaction.", err);
+                });
             }
-        });
+        }
 
-        // Listen for clicks specifically on the mute button
+        // Listen for ANY click or keypress on the entire webpage
+        document.addEventListener('click', startAudio);
+        document.addEventListener('keydown', startAudio);
+
+        // Mute button directly controls Play/Pause now
         muteBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents the body click listener from firing at the same time
-            toggleAudio();
+            e.stopPropagation(); // Prevents the document click from firing at the exact same time
+            
+            if (isPlaying) {
+                bgMusic.pause();
+                isPlaying = false;
+                updateIcons();
+            } else {
+                let playPromise = bgMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        isPlaying = true;
+                        bgMusic.muted = false;
+                        updateIcons();
+                    }).catch(err => console.log(err));
+                }
+            }
         });
 
         // View Switching Logic
